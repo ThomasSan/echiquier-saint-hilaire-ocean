@@ -7,10 +7,11 @@
 <meta name="description" content="Club d'échecs associatif au bord de l'océan : initiation, perfectionnement et compétition pour tous les âges, dès 6 ans. Première séance gratuite.">
 <meta property="og:title" content="Échiquier de Saint-Hilaire Océan">
 <meta property="og:description" content="Le jeu d'échecs pour tous, au bord de l'océan.">
-<meta property="og:image" content="assets/echiquier-ocean.png">
+<meta property="og:image" content="https://thomassan.github.io/echiquier-saint-hilaire-ocean/assets/partage.jpg">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#1E5A4E">
-<link rel="icon" href="assets/echiquier-ocean.png">
+<link rel="icon" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -21,6 +22,7 @@
   --ecume:#F4F6F2; --dune:#E6E0CF; --encre:#14231F; --encre-2:#4A5A55;
   --mer:#1E5A4E; --mer-clair:#D5E6E0; --balise:#E5AC2E; --surface:#FFFFFF;
   --trait:#CBD3CE; --case-claire:#EDE6D3; --case-foncee:#3D6E62; --sur-mer:#F4F6F2;
+  --logo-filtre:none;
   --f-titre:"Young Serif", Georgia, "Times New Roman", serif;
   --f-texte:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
   --f-mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
@@ -31,6 +33,7 @@
     --ecume:#0F1916; --dune:#1A2622; --encre:#E6EDE8; --encre-2:#A3B3AD;
     --mer:#7BBFAE; --mer-clair:#1D332D; --balise:#F0BE4A; --surface:#15221E;
     --trait:#2C3D37; --case-claire:#C9C0A8; --case-foncee:#2D564C; --sur-mer:#0F1916;
+    --logo-filtre:invert(1) hue-rotate(180deg) brightness(.95);
   }
 }
 *{box-sizing:border-box}
@@ -50,7 +53,7 @@ a{color:var(--mer)}
 header{position:sticky;top:0;z-index:5;background:var(--ecume);border-bottom:1px solid var(--trait)}
 .head{display:flex;align-items:center;gap:20px;padding-block:12px;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--encre);margin-right:auto}
-.logo{width:44px;height:44px;flex:none;border-radius:50%;object-fit:cover}
+.logo{width:64px;height:64px;flex:none;object-fit:contain;filter:var(--logo-filtre)}
 .brand b{font-family:var(--f-titre);font-weight:400;font-size:19px;line-height:1.1;display:block}
 .brand small{font-size:12px;color:var(--encre-2);letter-spacing:.06em;text-transform:uppercase}
 nav{display:flex;gap:4px;overflow-x:auto;max-width:100%}
@@ -178,8 +181,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-bet
 <header>
   <div class="wrap head">
     <a class="brand" href="#accueil" data-go="accueil">
-      <!-- Remplacer assets/echiquier-ocean.png par assets/logo.png quand le logo est prêt -->
-      <img class="logo" src="assets/echiquier-ocean.png" alt="">
+      <img class="logo" src="assets/logo-symbole.png" alt="" width="64" height="64">
       <span><b>Échiquier de Saint-Hilaire Océan</b><small>Club d'échecs</small></span>
     </a>
     <nav aria-label="Navigation principale">
