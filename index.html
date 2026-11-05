@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Échiquier de Saint-Hilaire Océan · Club d'échecs</title>
+<meta name="description" content="Club d'échecs associatif au bord de l'océan : initiation, perfectionnement et compétition pour tous les âges, dès 6 ans. Première séance gratuite.">
+<meta property="og:title" content="Échiquier de Saint-Hilaire Océan">
+<meta property="og:description" content="Le jeu d'échecs pour tous, au bord de l'océan.">
+<meta property="og:image" content="assets/echiquier-ocean.png">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#1E5A4E">
+<link rel="icon" href="assets/echiquier-ocean.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout : site vitrine à onglets, colonne centrale 1080px, bandes pleine largeur (écume / dune / mer) */
+:root{
+  color-scheme:light;
+  --ecume:#F4F6F2; --dune:#E6E0CF; --encre:#14231F; --encre-2:#4A5A55;
+  --mer:#1E5A4E; --mer-clair:#D5E6E0; --balise:#E5AC2E; --surface:#FFFFFF;
+  --trait:#CBD3CE; --case-claire:#EDE6D3; --case-foncee:#3D6E62; --sur-mer:#F4F6F2;
+  --f-titre:"Young Serif", Georgia, "Times New Roman", serif;
+  --f-texte:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    color-scheme:dark;
+    --ecume:#0F1916; --dune:#1A2622; --encre:#E6EDE8; --encre-2:#A3B3AD;
+    --mer:#7BBFAE; --mer-clair:#1D332D; --balise:#F0BE4A; --surface:#15221E;
+    --trait:#2C3D37; --case-claire:#C9C0A8; --case-foncee:#2D564C; --sur-mer:#0F1916;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:90px}
+body{margin:0;background:var(--ecume);color:var(--encre);font-family:var(--f-texte);font-size:17px;line-height:1.6}
+img{max-width:100%}
+[hidden]{display:none!important}
+h1,h2,h3{font-family:var(--f-titre);font-weight:400;line-height:1.15;text-wrap:balance;margin:0}
+p{margin:0}
+a{color:var(--mer)}
+:focus-visible{outline:3px solid var(--balise);outline-offset:2px;border-radius:4px}
+
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+.band{padding-block:56px}
+.band.dune{background:var(--dune)}
+
+header{position:sticky;top:0;z-index:5;background:var(--ecume);border-bottom:1px solid var(--trait)}
+.head{display:flex;align-items:center;gap:20px;padding-block:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--encre);margin-right:auto}
+.logo{width:44px;height:44px;flex:none;border-radius:50%;object-fit:cover}
+.brand b{font-family:var(--f-titre);font-weight:400;font-size:19px;line-height:1.1;display:block}
+.brand small{font-size:12px;color:var(--encre-2);letter-spacing:.06em;text-transform:uppercase}
+nav{display:flex;gap:4px;overflow-x:auto;max-width:100%}
+nav a{padding:8px 12px;border-radius:6px;text-decoration:none;color:var(--encre);white-space:nowrap;font-size:15px}
+nav a:hover{background:var(--mer-clair)}
+nav a[aria-current="page"]{background:var(--mer);color:var(--sur-mer)}
+
+.todo{background:color-mix(in srgb, var(--balise) 28%, transparent);border-bottom:2px dotted var(--balise);padding:0 3px;border-radius:2px}
+.tag{display:inline-block;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mer);border:1px solid currentColor;border-radius:3px;padding:1px 6px}
+
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;padding-block:56px 48px}
+.hero h1{font-size:clamp(36px,6vw,60px)}
+.hero .tagline{font-family:var(--f-titre);font-size:clamp(20px,2.4vw,26px);color:var(--mer);margin-top:14px}
+.hero .intro{margin-top:18px;max-width:52ch;color:var(--encre-2)}
+.ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:8px;font-weight:700;text-decoration:none;font-size:16px;border:2px solid var(--mer);color:var(--mer);background:transparent;cursor:pointer;font-family:inherit}
+.btn:hover{background:var(--mer-clair)}
+.btn.plein{background:var(--mer);color:var(--sur-mer)}
+.btn.plein:hover{filter:brightness(1.1)}
+.btn.balise{background:var(--balise);border-color:var(--balise);color:#1d1a10}
+
+.board-wrap{position:relative;max-width:420px;width:100%;justify-self:center}
+.board{display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);aspect-ratio:1;max-width:100%;border:6px solid var(--encre);border-radius:4px;overflow:hidden;position:relative}
+.board div{display:grid;place-items:center;font-size:clamp(20px,4vw,34px);line-height:1;color:#14231F}
+.board .l{background:var(--case-claire)}
+.board .d{background:var(--case-foncee)}
+.board .w{color:#fff;text-shadow:0 0 2px #000,0 1px 0 #000}
+.waves{position:absolute;left:0;right:0;bottom:0;height:38%;width:100%;pointer-events:none}
+.coords{display:flex;justify-content:space-around;font-family:var(--f-mono);font-size:12px;color:var(--encre-2);padding-top:6px}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:24px}
+.kicker{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--mer);margin-bottom:10px}
+h2{font-size:clamp(28px,3.6vw,38px)}
+h3{font-size:22px}
+.checks{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:10px}
+.checks li{display:flex;gap:12px;align-items:baseline}
+.checks li::before{content:"♞";color:var(--mer);font-size:18px;flex:none}
+dl.pratique{display:grid;grid-template-columns:auto 1fr;gap:12px 20px;margin:18px 0 0}
+dl.pratique dt{font-weight:700}
+dl.pratique dd{margin:0;color:var(--encre-2)}
+
+.agenda{list-style:none;padding:0;margin:20px 0 0;border-top:1px solid var(--trait)}
+.agenda li{display:grid;grid-template-columns:72px 1fr auto;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid var(--trait)}
+.date{font-family:var(--f-mono);text-align:center;line-height:1.1;font-variant-numeric:tabular-nums}
+.date b{display:block;font-size:26px;font-weight:500;color:var(--encre)}
+.date span{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--encre-2)}
+.agenda .what b{display:block}
+.agenda .what span{color:var(--encre-2);font-size:15px}
+.pill{font-size:12px;padding:3px 10px;border-radius:99px;background:var(--mer-clair);color:var(--mer);font-weight:700;white-space:nowrap}
+.pill.tournoi{background:var(--balise);color:#1d1a10}
+.vide{padding:18px 0;color:var(--encre-2)}
+
+.essai{background:var(--mer);color:var(--sur-mer)}
+.essai .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px}
+.essai p{font-family:var(--f-titre);font-size:clamp(20px,2.6vw,28px);max-width:30ch}
+
+.page-head{padding-block:48px 8px}
+.page-head h1{font-size:clamp(34px,5vw,52px)}
+.page-head p{margin-top:12px;max-width:60ch;color:var(--encre-2);font-size:18px}
+.prose{max-width:65ch}
+.prose p+p{margin-top:14px}
+.offre{padding:22px;border:1px solid var(--trait);border-radius:10px;background:var(--surface);display:flex;flex-direction:column;gap:8px}
+.offre .icone{font-size:30px;line-height:1;color:var(--mer)}
+.offre p{color:var(--encre-2);font-size:16px}
+
+.table-box{overflow-x:auto;margin-top:18px}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--trait)}
+th{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--encre-2);font-weight:500}
+.prix{text-align:right;font-weight:700;white-space:nowrap}
+th.prix{font-weight:500}
+
+.map{width:100%;aspect-ratio:4/3;border:0;border-radius:10px;background:var(--mer-clair)}
+.note{font-family:var(--f-mono);font-size:12px;color:var(--encre-2);margin-top:8px}
+
+.cal-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+.cal-top h2{margin-right:auto}
+.cal-nav{width:40px;height:40px;border-radius:8px;border:1px solid var(--trait);background:var(--surface);color:var(--encre);font-size:18px;cursor:pointer}
+.cal-box{overflow-x:auto}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);border:1px solid var(--trait);border-radius:10px;overflow:hidden;background:var(--surface);margin-top:20px;min-width:560px}
+.cal div{min-height:78px;padding:6px;border-right:1px solid var(--trait);border-bottom:1px solid var(--trait);font-size:13px;font-variant-numeric:tabular-nums}
+.cal div:nth-child(7n){border-right:0}
+.cal .dow{min-height:auto;font-family:var(--f-mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--encre-2);background:var(--dune);text-align:center}
+.cal .off{background:color-mix(in srgb, var(--dune) 35%, transparent)}
+.cal .auj{font-weight:700;color:var(--mer)}
+.cal .ev{display:block;margin-top:4px;font-size:11px;padding:2px 5px;border-radius:4px;background:var(--mer-clair);color:var(--mer);font-weight:700;line-height:1.3}
+.cal .ev.t{background:var(--balise);color:#1d1a10}
+.gcal{width:100%;border:1px solid var(--trait);border-radius:10px;background:#fff;margin-top:20px}
+
+form{display:grid;gap:16px;max-width:560px}
+label{font-weight:700;display:grid;gap:6px;font-size:15px}
+input,select,textarea{font:inherit;font-weight:400;padding:11px 12px;border:1px solid var(--trait);border-radius:8px;background:var(--surface);color:var(--encre)}
+textarea{min-height:130px;resize:vertical}
+.sent{padding:14px 16px;border-radius:8px;background:var(--mer-clair);color:var(--mer);font-weight:700}
+
+footer{border-top:1px solid var(--trait);padding-block:28px;color:var(--encre-2);font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between}
+
+@media (max-width:820px){
+  .hero,.grid-2{grid-template-columns:1fr;gap:32px}
+  .grid-3{grid-template-columns:1fr}
+  .hero{padding-block:36px}
+  .band{padding-block:40px}
+  .head{gap:10px}
+  nav{flex-wrap:wrap;overflow:visible}
+  nav a{padding:6px 10px}
+}
+.wrap.prose{max-width:1080px}
+.wrap.prose > *{max-width:65ch}
+#cal-liste{display:none}
+@media (max-width:640px){
+  .cal-box{display:none}
+  #cal-liste{display:block}
+}
+@media (prefers-reduced-motion:no-preference){
+  .waves path{animation:houle 7s ease-in-out infinite alternate}
+  .waves path:nth-child(2){animation-duration:9s}
+  @keyframes houle{from{transform:translateX(0)}to{transform:translateX(-6%)}}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap head">
+    <a class="brand" href="#accueil" data-go="accueil">
+      <!-- Remplacer assets/echiquier-ocean.png par assets/logo.png quand le logo est prêt -->
+      <img class="logo" src="assets/echiquier-ocean.png" alt="">
+      <span><b>Échiquier de Saint-Hilaire Océan</b><small>Club d'échecs</small></span>
+    </a>
+    <nav aria-label="Navigation principale">
+      <a href="#accueil" data-go="accueil">Accueil</a>
+      <a href="#club" data-go="club">Le club</a>
+      <a href="#agenda" data-go="agenda">Agenda &amp; tournois</a>
+      <a href="#adhesion" data-go="adhesion">Adhésion</a>
+      <a href="#contact" data-go="contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<!-- ================= ACCUEIL ================= -->
+<section class="page" id="p-accueil">
+  <div class="wrap hero">
+    <div>
+      <h1>Échiquier de Saint-Hilaire Océan</h1>
+      <p class="tagline">Le jeu d'échecs pour tous, au bord de l'océan.</p>
+      <p class="intro">Initiation, perfectionnement et compétition, de 6 à 99 ans. Que vous n'ayez jamais touché une pièce ou que vous visiez votre premier tournoi, il y a une place pour vous à notre table.</p>
+      <div class="ctas">
+        <a class="btn plein" href="#club" data-go="club">♟️ Découvrir le club</a>
+        <a class="btn" href="#club" data-go="club" data-anchor="horaires">📅 Voir les horaires</a>
+        <a class="btn balise" href="#adhesion" data-go="adhesion">✍️ Adhérer</a>
+      </div>
+    </div>
+    <div class="board-wrap" aria-hidden="true">
+      <div class="board" id="board">
+        <svg class="waves" viewBox="0 0 400 150" preserveAspectRatio="none">
+          <path d="M0 40 Q 50 15 100 40 T 200 40 T 300 40 T 400 40 T 500 40 V150 H0Z" fill="var(--mer)" opacity=".55"/>
+          <path d="M0 70 Q 50 48 100 70 T 200 70 T 300 70 T 400 70 T 500 70 V150 H0Z" fill="var(--mer)" opacity=".85"/>
+        </svg>
+      </div>
+      <div class="coords"><span>a</span><span>b</span><span>c</span><span>d</span><span>e</span><span>f</span><span>g</span><span>h</span></div>
+    </div>
+  </div>
+
+  <div class="band dune">
+    <div class="wrap grid-2">
+      <div>
+        <p class="kicker">Infos essentielles</p>
+        <h2>Ici, tout le monde joue</h2>
+        <ul class="checks">
+          <li>Adultes débutants bienvenus</li>
+          <li>Jeunes à partir de 6 ans</li>
+          <li>Loisirs et compétition</li>
+          <li>Tournois amicaux</li>
+          <li>Interventions scolaires possibles</li>
+        </ul>
+      </div>
+      <div>
+        <p class="kicker">En pratique</p>
+        <h2>Où et quand</h2>
+        <dl class="pratique">
+          <dt>Où ?</dt><dd><span data-info="salle" class="todo">Nom de la salle</span>, <span data-info="adresse" class="todo">adresse</span></dd>
+          <dt>Quand ?</dt><dd id="quand"><span class="todo">Jours et heures des séances</span></dd>
+          <dt>Contact</dt><dd><a data-mail class="todo" href="#contact" data-go="contact">e-mail du club</a></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="band">
+    <div class="wrap">
+      <p class="kicker">Prochains rendez-vous</p>
+      <h2>À venir au club</h2>
+      <ul class="agenda" id="next"></ul>
+      <iframe class="gcal" id="next-gcal" title="Prochains rendez-vous" height="380" hidden></iframe>
+      <p class="note" id="next-note" hidden>Exemples de rendez-vous : l'agenda du club n'est pas encore relié.</p>
+      <p style="margin-top:18px"><a href="#agenda" data-go="agenda">Voir tout l'agenda →</a></p>
+    </div>
+  </div>
+
+  <div class="band essai">
+    <div class="wrap">
+      <p>Première séance d'essai gratuite. Venez simplement, on vous prête un échiquier.</p>
+      <a class="btn balise" href="#contact" data-go="contact">Nous écrire</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= LE CLUB ================= -->
+<section class="page" id="p-club" hidden>
+  <div class="wrap page-head">
+    <h1>Le club</h1>
+    <p>Un club associatif où l'on vient jouer, apprendre et progresser dans une ambiance détendue.</p>
+  </div>
+  <div class="band">
+    <div class="wrap prose">
+      <p>L'Échiquier de Saint-Hilaire Océan est un club d'échecs associatif créé en <span data-info="creation" class="todo">2026</span>. Notre idée est simple : offrir sur la côte un lieu où l'on vient jouer, apprendre et progresser dans une ambiance détendue.</p>
+      <p>On y croise des enfants qui découvrent la marche du cavalier, des adultes qui reprennent après des années, des joueurs de tournoi qui préparent leurs parties, et des vacanciers de passage. Le niveau n'a aucune importance : chacun trouve un adversaire à sa mesure.</p>
+    </div>
+  </div>
+  <div class="band dune">
+    <div class="wrap">
+      <p class="kicker">Ce que nous proposons</p>
+      <h2>Du premier coup au premier tournoi</h2>
+      <div class="grid-3">
+        <div class="offre"><span class="icone" aria-hidden="true">♙</span><h3>Initiation</h3><p>Les règles, les mouvements et les premiers plans de jeu. Idéal pour les enfants et les adultes débutants.</p></div>
+        <div class="offre"><span class="icone" aria-hidden="true">♘</span><h3>Perfectionnement</h3><p>Ouvertures, tactique, finales : exercices et analyses de parties pour franchir un cap.</p></div>
+        <div class="offre"><span class="icone" aria-hidden="true">♔</span><h3>Compétition</h3><p>Tournois et championnats avec la licence FFE, pour ceux qui le souhaitent.</p></div>
+        <div class="offre"><span class="icone" aria-hidden="true">♗</span><h3>Jeu libre</h3><p>Des parties amicales, en cadence lente ou en blitz, simplement pour le plaisir.</p></div>
+        <div class="offre"><span class="icone" aria-hidden="true">♖</span><h3>Interventions scolaires</h3><p>Le club peut intervenir dans les écoles et les centres de loisirs. Parlons-en.</p></div>
+        <div class="offre"><span class="icone" aria-hidden="true">♕</span><h3>Tournois amicaux</h3><p>Plusieurs fois par an, ouverts à tous, licenciés ou non.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="band" id="horaires">
+    <div class="wrap grid-2">
+      <div>
+        <p class="kicker">Horaires et lieu</p>
+        <h2>Nous trouver</h2>
+        <p style="margin-top:14px"><b data-info="salle" class="todo">Nom de la salle</b><br><span data-info="adresse" class="todo">Adresse complète</span></p>
+        <div class="table-box">
+          <table>
+            <thead><tr><th>Créneau</th><th>Public</th></tr></thead>
+            <tbody id="horaires-table">
+              <tr><td><span class="todo">Mercredi 14h – 16h</span></td><td>Jeunes, dès 6 ans</td></tr>
+              <tr><td><span class="todo">Vendredi 20h – 23h</span></td><td>Adultes, tous niveaux</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-top:14px;color:var(--encre-2)">Vacances scolaires : <span data-info="vacances" class="todo">à préciser</span></p>
+      </div>
+      <div>
+        <iframe class="map" id="map" title="Plan d'accès" loading="lazy" hidden></iframe>
+      </div>
+    </div>
+  </div>
+  <div class="band dune">
+    <div class="wrap">
+      <p class="kicker">Le bureau</p>
+      <dl class="pratique" id="bureau">
+        <dt>Président·e</dt><dd><span class="todo">Prénom Nom</span></dd>
+        <dt>Trésorier·ère</dt><dd><span class="todo">Prénom Nom</span></dd>
+        <dt>Secrétaire</dt><dd><span class="todo">Prénom Nom</span></dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ================= AGENDA ================= -->
+<section class="page" id="p-agenda" hidden>
+  <div class="wrap page-head">
+    <h1>Agenda &amp; tournois</h1>
+    <p>Séances, tournois amicaux, compétitions officielles : tout le calendrier du club.</p>
+  </div>
+  <div class="band">
+    <div class="wrap">
+      <div id="cal-perso">
+        <span class="tag" id="cal-exemple" hidden>Exemples · agenda pas encore relié</span>
+        <div class="cal-top">
+          <h2 id="cal-title"></h2>
+          <button class="cal-nav" id="cal-prev" type="button" aria-label="Mois précédent">‹</button>
+          <button class="cal-nav" id="cal-next" type="button" aria-label="Mois suivant">›</button>
+        </div>
+        <div class="cal-box"><div class="cal" id="cal"></div></div>
+        <ul class="agenda" id="cal-liste"></ul>
+      </div>
+      <iframe class="gcal" id="cal-gcal" title="Agenda du club" height="600" hidden></iframe>
+    </div>
+  </div>
+  <div class="band dune">
+    <div class="wrap grid-2">
+      <div class="prose">
+        <p class="kicker">Tournois du club</p>
+        <h2>Les tournois amicaux</h2>
+        <p style="margin-top:14px">Plusieurs fois par an, le club organise des tournois amicaux ouverts à tous, licenciés ou non. Les dates apparaissent dans l'agenda ci-dessus. Inscription sur place ou par e-mail.</p>
+      </div>
+      <div class="prose">
+        <p class="kicker">Compétitions officielles</p>
+        <h2>Avec la FFE</h2>
+        <p style="margin-top:14px">Les tournois homologués de la région sont listés sur le site de la Fédération Française des Échecs.</p>
+        <div class="ctas">
+          <a class="btn plein" data-link="ffeTournois" href="#" target="_blank" rel="noopener">Tournois FFE</a>
+          <a class="btn" data-link="ffeClub" href="#" target="_blank" rel="noopener">Fiche du club FFE</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="band">
+    <div class="wrap prose">
+      <h3>Envie de vous lancer ?</h3>
+      <p style="margin-top:10px">Vous n'avez jamais joué de tournoi ? Parlez-en lors d'une séance : on vous explique le fonctionnement et on peut s'y rendre ensemble.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ADHÉSION ================= -->
+<section class="page" id="p-adhesion" hidden>
+  <div class="wrap page-head">
+    <h1>Adhésion</h1>
+    <p>La première séance est gratuite et sans engagement. Si l'ambiance vous plaît, vous pouvez adhérer en ligne en quelques minutes.</p>
+  </div>
+  <div class="band">
+    <div class="wrap grid-2">
+      <div>
+        <p class="kicker">Tarifs saison <span data-info="saison">2026-2027</span></p>
+        <div class="table-box">
+          <table>
+            <thead><tr><th>Formule</th><th class="prix">Tarif</th></tr></thead>
+            <tbody id="tarifs-table">
+              <tr><td>Jeune (moins de 18 ans)</td><td class="prix"><span class="todo">XX €</span></td></tr>
+              <tr><td>Adulte</td><td class="prix"><span class="todo">XX €</span></td></tr>
+              <tr><td>Famille (dès 2 membres)</td><td class="prix"><span class="todo">XX €</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-top:16px;color:var(--encre-2)">L'adhésion couvre la saison de septembre à juin et donne accès à toutes les séances. La licence FFE n'est nécessaire que pour les tournois officiels.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:18px;justify-content:center">
+        <a class="btn balise" data-link="helloasso" style="justify-content:center;font-size:19px;padding:18px" href="#contact" data-go="contact" target="_blank" rel="noopener">✍️ Adhérer en ligne</a>
+        <div class="prose">
+          <h3>Autres moyens de paiement</h3>
+          <p style="margin-top:8px;color:var(--encre-2)">Chèque à l'ordre de « Échiquier de Saint-Hilaire Océan » ou espèces, sur place. <span data-info="paiements"></span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section class="page" id="p-contact" hidden>
+  <div class="wrap page-head">
+    <h1>Contact</h1>
+    <p>Une question sur le club, une demande d'intervention scolaire ou envie de passer nous voir ? Écrivez-nous, nous répondons en général sous quelques jours.</p>
+  </div>
+  <div class="band">
+    <div class="wrap grid-2">
+      <div>
+        <form id="form" hidden>
+          <label for="f-nom">Nom<input id="f-nom" name="nom" required autocomplete="name"></label>
+          <label for="f-mail">E-mail<input id="f-mail" name="email" type="email" required autocomplete="email"></label>
+          <label for="f-sujet">Sujet
+            <select id="f-sujet" name="sujet"><option>Infos sur le club</option><option>Adhésion</option><option>Intervention scolaire</option><option>Autre</option></select>
+          </label>
+          <label for="f-msg">Message<textarea id="f-msg" name="message" required></textarea></label>
+          <button class="btn plein" type="submit" style="justify-self:start">Envoyer le message</button>
+          <p class="sent" id="sent" role="status" hidden>Message envoyé. Merci, nous vous répondons rapidement.</p>
+        </form>
+        <p id="form-off" class="prose">Écrivez-nous directement par e-mail à l'adresse ci-contre.</p>
+      </div>
+      <div>
+        <p class="kicker">Coordonnées</p>
+        <dl class="pratique">
+          <dt>E-mail</dt><dd><a data-mail class="todo" href="#contact" data-go="contact">e-mail du club</a></dd>
+          <dt>Séances</dt><dd><span data-info="salle" class="todo">Nom de la salle</span>, <span data-info="adresse" class="todo">adresse</span></dd>
+          <dt id="reseaux-dt" hidden>Réseaux</dt><dd id="reseaux" hidden></dd>
+        </dl>
+        <p style="margin-top:24px;font-family:var(--f-titre);font-size:22px;color:var(--mer)">Le plus simple reste de venir à une séance : on vous accueillera avec plaisir.</p>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="annee">2026</span> Échiquier de Saint-Hilaire Océan · association loi 1901</span>
+    <span>Club affilié FFE <span data-info="ffe"></span></span>
+  </div>
+</footer>
+
+<script src="config.js"></script>
+<script>
+const C = window.CLUB || {};
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+$('#annee').textContent = new Date().getFullYear();
+
+/* ---------- Navigation ---------- */
+function go(id, anchor){
+  if(!$('#p-'+id)) id = 'accueil';
+  $$('section.page').forEach(s => s.hidden = s.id !== 'p-'+id);
+  $$('nav a').forEach(a => a.dataset.go === id ? a.setAttribute('aria-current','page') : a.removeAttribute('aria-current'));
+  const t = anchor && document.getElementById(anchor);
+  t ? t.scrollIntoView({block:'start'}) : window.scrollTo(0,0);
+}
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-go]'); if(!a) return;
+  e.preventDefault(); history.pushState(null,'','#'+a.dataset.go); go(a.dataset.go, a.dataset.anchor);
+});
+window.addEventListener('popstate', () => go((location.hash||'#accueil').slice(1)));
+go((location.hash||'#accueil').slice(1));
+
+/* ---------- Échiquier de l'accueil ---------- */
+(function(){
+  const pos = {a8:'♜',e8:'♚',f8:'♝',h8:'♜',b7:'♟',c7:'♟',f7:'♟',g7:'♟',h7:'♟',c6:'♞',e5:'♟',c4:'w♗',e4:'w♙',f3:'w♘'};
+  const frag = document.createDocumentFragment();
+  for(let r=8;r>=1;r--) for(let f=0;f<8;f++){
+    const d = document.createElement('div'); let p = pos['abcdefgh'[f]+r] || '';
+    d.className = (r+f)%2===0 ? 'l' : 'd';
+    if(p[0]==='w'){ p = p.slice(1); d.classList.add('w'); }
+    d.textContent = p; frag.appendChild(d);
+  }
+  $('#board').insertBefore(frag, $('#board').firstChild);
+})();
+
+/* ---------- Liens (config.js) ---------- */
+$$('[data-link]').forEach(a => {
+  const url = C[a.dataset.link];
+  if(url){ a.href = url; a.removeAttribute('data-go'); }
+  else if(a.dataset.link !== 'helloasso') a.hidden = true;
+  else a.removeAttribute('target');
+});
+const reseaux = [['Facebook',C.facebook],['Instagram',C.instagram]].filter(r => r[1]);
+if(reseaux.length){
+  $('#reseaux').innerHTML = reseaux.map(r => `<a href="${esc(r[1])}" target="_blank" rel="noopener">${r[0]}</a>`).join(' · ');
+  $('#reseaux').hidden = $('#reseaux-dt').hidden = false;
+}
+
+/* ---------- Infos du club (Google Sheet publiée en CSV) ---------- */
+function parseCSV(txt){
+  const rows = []; let row = [], cell = '', q = false;
+  for(let i=0;i<txt.length;i++){
+    const c = txt[i];
+    if(q){ if(c==='"'){ if(txt[i+1]==='"'){cell+='"';i++;} else q=false; } else cell+=c; }
+    else if(c==='"') q = true;
+    else if(c===','){ row.push(cell); cell=''; }
+    else if(c==='\n'){ row.push(cell); rows.push(row); row=[]; cell=''; }
+    else if(c!=='\r') cell += c;
+  }
+  if(cell || row.length){ row.push(cell); rows.push(row); }
+  return rows;
+}
+function appliquerInfos(rows){
+  const infos = {}, horaires = [], tarifs = [], bureau = [];
+  rows.slice(1).forEach(([sec='', lib='', val='']) => {
+    sec = sec.trim().toLowerCase(); lib = lib.trim(); val = val.trim();
+    if(!sec || !lib) return;
+    if(sec==='infos') infos[lib.toLowerCase()] = val;
+    else if(sec==='horaire') horaires.push([lib,val]);
+    else if(sec==='tarif') tarifs.push([lib,val]);
+    else if(sec==='bureau') bureau.push([lib,val]);
+  });
+  $$('[data-info]').forEach(el => {
+    const v = infos[el.dataset.info];
+    if(v){ el.textContent = v; el.classList.remove('todo'); }
+  });
+  if(infos.email){
+    $$('[data-mail]').forEach(a => { a.textContent = infos.email; a.href = 'mailto:'+infos.email; a.removeAttribute('data-go'); a.classList.remove('todo'); });
+  }
+  if(infos.adresse){
+    const q = encodeURIComponent([infos.salle, infos.adresse].filter(Boolean).join(', '));
+    $('#map').src = 'https://maps.google.com/maps?q='+q+'&z=15&output=embed';
+    $('#map').hidden = false;
+  }
+  if(horaires.length){
+    $('#horaires-table').innerHTML = horaires.map(([a,b]) => `<tr><td>${esc(a)}</td><td>${esc(b)}</td></tr>`).join('');
+    $('#quand').innerHTML = horaires.map(([a,b]) => `${esc(a)} <span style="opacity:.8">(${esc(b)})</span>`).join('<br>');
+  }
+  if(tarifs.length) $('#tarifs-table').innerHTML = tarifs.map(([a,b]) => `<tr><td>${esc(a)}</td><td class="prix">${esc(b)}</td></tr>`).join('');
+  if(bureau.length) $('#bureau').innerHTML = bureau.map(([a,b]) => `<dt>${esc(a)}</dt><dd>${esc(b)}</dd>`).join('');
+}
+if(C.feuilleInfos){
+  fetch(C.feuilleInfos).then(r => r.ok ? r.text() : Promise.reject(r.status))
+    .then(t => appliquerInfos(parseCSV(t)))
+    .catch(err => console.warn('Infos du club non chargées :', err));
+}
+
+/* ---------- Agenda ---------- */
+const MOIS = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+const JOURS = ['dim.','lun.','mar.','mer.','jeu.','ven.','sam.'];
+const heure = d => d.getHours()+'h'+(d.getMinutes() ? String(d.getMinutes()).padStart(2,'0') : '');
+const estTournoi = t => /tournoi|championnat|compét/i.test(t);
+const today = new Date(); today.setHours(0,0,0,0);
+let mode = 'exemple';
+
+function exemples(debut, fin){
+  const out = [];
+  for(let d = new Date(debut); d < fin; d.setDate(d.getDate()+1)){
+    const w = d.getDay(), j = d.getDate();
+    const at = (h1,h2) => [new Date(d.getFullYear(),d.getMonth(),j,h1), new Date(d.getFullYear(),d.getMonth(),j,h2)];
+    if(w===3){ const [s,e]=at(14,16); out.push({titre:'Séance jeunes',debut:s,fin:e,detail:'Initiation et jeu'}); }
+    if(w===5){ const [s,e]=at(20,23); out.push({titre:'Soirée adultes',debut:s,fin:e,detail:'Tous niveaux'}); }
+    if(w===6 && j>14 && j<=21){ const [s,e]=at(14,19); out.push({titre:'Tournoi amical de rapide',debut:s,fin:e,detail:'Ouvert à tous'}); }
+  }
+  return out;
+}
+async function evenements(debut, fin){
+  if(mode !== 'api') return exemples(debut, fin);
+  const u = new URL('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(C.agendaId)+'/events');
+  u.search = new URLSearchParams({key:C.agendaCleApi, timeMin:debut.toISOString(), timeMax:fin.toISOString(),
+    singleEvents:'true', orderBy:'startTime', maxResults:'100'});
+  const r = await fetch(u); if(!r.ok) throw new Error('Agenda : '+r.status);
+  const data = await r.json();
+  return (data.items||[]).map(e => {
+    const journee = !!e.start.date;
+    return { titre:e.summary||'Événement', journee,
+      debut:new Date(journee ? e.start.date+'T00:00' : e.start.dateTime),
+      fin:new Date(journee ? e.end.date+'T00:00' : e.end.dateTime),
+      detail:e.location || '' };
+  });
+}
+function gcalUrl(vue){
+  return 'https://calendar.google.com/calendar/embed?src='+encodeURIComponent(C.agendaId)+
+    '&ctz=Europe%2FParis&mode='+vue+'&showTitle=0&showPrint=0&showTabs=0&showCalendars=0&hl=fr&color=%231E5A4E';
+}
+
+async function prochains(){
+  const fin = new Date(today); fin.setDate(fin.getDate()+60);
+  const evs = (await evenements(today, fin)).slice(0,4);
+  $('#next').innerHTML = liste(evs, 'Aucun rendez-vous programmé pour le moment.');
+}
+function liste(evs, siVide){
+  return evs.length ? evs.map(e => `<li>
+    <div class="date"><span>${JOURS[e.debut.getDay()]}</span><b>${e.debut.getDate()}</b><span>${MOIS[e.debut.getMonth()].slice(0,4)}.</span></div>
+    <div class="what"><b>${esc(e.titre)}</b><span>${e.journee ? 'Toute la journée' : heure(e.debut)+' – '+heure(e.fin)}${e.detail ? ' · '+esc(e.detail) : ''}</span></div>
+    <span class="pill ${estTournoi(e.titre)?'tournoi':''}">${estTournoi(e.titre)?'Tournoi':'Séance'}</span></li>`).join('')
+    : `<li class="vide">${siVide}</li>`;
+}
+
+let moisAffiche = new Date(today.getFullYear(), today.getMonth(), 1);
+async function calendrier(){
+  const y = moisAffiche.getFullYear(), m = moisAffiche.getMonth();
+  $('#cal-title').textContent = MOIS[m][0].toUpperCase()+MOIS[m].slice(1)+' '+y;
+  const evs = await evenements(new Date(y,m,1), new Date(y,m+1,1));
+  const start = (new Date(y,m,1).getDay()+6)%7, nb = new Date(y,m+1,0).getDate();
+  let h = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'].map(x => `<div class="dow">${x}</div>`).join('');
+  h += '<div class="off"></div>'.repeat(start);
+  for(let d=1; d<=nb; d++){
+    const jour = evs.filter(e => e.debut.getFullYear()===y && e.debut.getMonth()===m && e.debut.getDate()===d);
+    const auj = y===today.getFullYear() && m===today.getMonth() && d===today.getDate();
+    h += `<div${auj?' class="auj"':''}>${d}${jour.map(e => `<span class="ev${estTournoi(e.titre)?' t':''}">${e.journee?'':heure(e.debut)+' '}${esc(e.titre)}</span>`).join('')}</div>`;
+  }
+  h += '<div class="off"></div>'.repeat((7-((start+nb)%7))%7);
+  $('#cal').innerHTML = h;
+  $('#cal-liste').innerHTML = liste(evs, 'Aucun rendez-vous ce mois-ci.');
+}
+$('#cal-prev').onclick = () => { moisAffiche.setMonth(moisAffiche.getMonth()-1); calendrier(); };
+$('#cal-next').onclick = () => { moisAffiche.setMonth(moisAffiche.getMonth()+1); calendrier(); };
+
+function agendaGoogle(){
+  $('#next').hidden = true;
+  $('#next-gcal').src = gcalUrl('AGENDA'); $('#next-gcal').hidden = false;
+  $('#cal-perso').hidden = true;
+  $('#cal-gcal').src = gcalUrl('MONTH'); $('#cal-gcal').hidden = false;
+}
+if(C.agendaId && C.agendaCleApi){
+  mode = 'api';
+  Promise.all([prochains(), calendrier()]).catch(err => { console.warn(err); agendaGoogle(); });
+} else if(C.agendaId){
+  agendaGoogle();
+} else {
+  $('#next-note').hidden = false; $('#cal-exemple').hidden = false;
+  prochains(); calendrier();
+}
+
+/* ---------- Formulaire de contact (Google Form) ---------- */
+const F = C.formulaire || {};
+if(F.action && F.nom && F.email && F.message){
+  $('#form').hidden = false; $('#form-off').hidden = true;
+  $('#form').addEventListener('submit', e => {
+    e.preventDefault();
+    const body = new URLSearchParams();
+    body.append(F.nom, $('#f-nom').value);
+    body.append(F.email, $('#f-mail').value);
+    if(F.sujet) body.append(F.sujet, $('#f-sujet').value);
+    body.append(F.message, $('#f-msg').value);
+    fetch(F.action, {method:'POST', mode:'no-cors', body}).then(() => {
+      $('#sent').hidden = false; $('#form').reset();
+    }).catch(() => {
+      $('#sent').textContent = "Le message n'a pas pu partir. Vérifiez votre connexion ou écrivez-nous par e-mail.";
+      $('#sent').hidden = false;
+    });
+  });
+}
+</script>
+</body>
+</html>
