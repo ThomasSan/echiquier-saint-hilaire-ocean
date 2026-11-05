@@ -20,8 +20,8 @@ window.CLUB = {
   // 3. Liens
   helloasso: "",       // formulaire d'adhésion HelloAsso
   ffeTournois: "https://www.echecs.asso.fr/ListeTournois.aspx",
-  ffeClub: "",         // fiche du club sur le site FFE
-  facebook: "",
+  ffeClub: "https://www.echecs.asso.fr/FicheClub.aspx?Ref=3482",         // fiche du club sur le site FFE
+  facebook: "https://www.facebook.com/p/Echiquier-de-Saint-Hilaire-Oc%C3%A9an-61594509785026/",
   instagram: "",
 
   // 4. Formulaire de contact relié à un Google Form (voir README.md)

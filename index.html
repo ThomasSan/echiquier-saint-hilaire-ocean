@@ -234,9 +234,9 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-bet
         <p class="kicker">En pratique</p>
         <h2>Où et quand</h2>
         <dl class="pratique">
-          <dt>Où ?</dt><dd><span data-info="salle" class="todo">Nom de la salle</span>, <span data-info="adresse" class="todo">adresse</span></dd>
-          <dt>Quand ?</dt><dd id="quand"><span class="todo">Jours et heures des séances</span></dd>
-          <dt>Contact</dt><dd><a data-mail class="todo" href="#contact" data-go="contact">e-mail du club</a></dd>
+          <dt>Où ?</dt><dd><span data-info="salle">Espace 166</span>, <span data-info="adresse">166 rue Georges Clemenceau, 85270 Saint-Hilaire-de-Riez</span></dd>
+          <dt>Quand ?</dt><dd id="quand">Samedi de 14h à 18h</dd>
+          <dt>Contact</dt><dd><a data-mail href="mailto:echiquierdesainthilaireocean@gmail.com">echiquierdesainthilaireocean@gmail.com</a></dd>
         </dl>
       </div>
     </div>
@@ -292,20 +292,19 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-bet
       <div>
         <p class="kicker">Horaires et lieu</p>
         <h2>Nous trouver</h2>
-        <p style="margin-top:14px"><b data-info="salle" class="todo">Nom de la salle</b><br><span data-info="adresse" class="todo">Adresse complète</span></p>
+        <p style="margin-top:14px"><b data-info="salle">Espace 166</b><br><span data-info="adresse">166 rue Georges Clemenceau, 85270 Saint-Hilaire-de-Riez</span></p>
         <div class="table-box">
           <table>
             <thead><tr><th>Créneau</th><th>Public</th></tr></thead>
             <tbody id="horaires-table">
-              <tr><td><span class="todo">Mercredi 14h – 16h</span></td><td>Jeunes, dès 6 ans</td></tr>
-              <tr><td><span class="todo">Vendredi 20h – 23h</span></td><td>Adultes, tous niveaux</td></tr>
+              <tr><td>Samedi 14h – 18h</td><td>Ouvert à tous, dès 6 ans</td></tr>
             </tbody>
           </table>
         </div>
         <p style="margin-top:14px;color:var(--encre-2)">Vacances scolaires : <span data-info="vacances" class="todo">à préciser</span></p>
       </div>
       <div>
-        <iframe class="map" id="map" title="Plan d'accès" loading="lazy" hidden></iframe>
+        <iframe class="map" id="map" title="Plan d'accès" loading="lazy" src="https://maps.google.com/maps?q=Espace%20166%2C%20166%20rue%20Georges%20Clemenceau%2C%2085270%20Saint-Hilaire-de-Riez&amp;z=15&amp;output=embed"></iframe>
       </div>
     </div>
   </div>
@@ -425,8 +424,8 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-bet
       <div>
         <p class="kicker">Coordonnées</p>
         <dl class="pratique">
-          <dt>E-mail</dt><dd><a data-mail class="todo" href="#contact" data-go="contact">e-mail du club</a></dd>
-          <dt>Séances</dt><dd><span data-info="salle" class="todo">Nom de la salle</span>, <span data-info="adresse" class="todo">adresse</span></dd>
+          <dt>E-mail</dt><dd><a data-mail href="mailto:echiquierdesainthilaireocean@gmail.com">echiquierdesainthilaireocean@gmail.com</a></dd>
+          <dt>Séances</dt><dd><span data-info="salle">Espace 166</span>, <span data-info="adresse">166 rue Georges Clemenceau, 85270 Saint-Hilaire-de-Riez</span></dd>
           <dt id="reseaux-dt" hidden>Réseaux</dt><dd id="reseaux" hidden></dd>
         </dl>
         <p style="margin-top:24px;font-family:var(--f-titre);font-size:22px;color:var(--mer)">Le plus simple reste de venir à une séance : on vous accueillera avec plaisir.</p>
@@ -554,9 +553,9 @@ function exemples(debut, fin){
   for(let d = new Date(debut); d < fin; d.setDate(d.getDate()+1)){
     const w = d.getDay(), j = d.getDate();
     const at = (h1,h2) => [new Date(d.getFullYear(),d.getMonth(),j,h1), new Date(d.getFullYear(),d.getMonth(),j,h2)];
-    if(w===3){ const [s,e]=at(14,16); out.push({titre:'Séance jeunes',debut:s,fin:e,detail:'Initiation et jeu'}); }
-    if(w===5){ const [s,e]=at(20,23); out.push({titre:'Soirée adultes',debut:s,fin:e,detail:'Tous niveaux'}); }
-    if(w===6 && j>14 && j<=21){ const [s,e]=at(14,19); out.push({titre:'Tournoi amical de rapide',debut:s,fin:e,detail:'Ouvert à tous'}); }
+    if(w===6){ const [s,e]=at(14,18);
+      out.push(j>14 && j<=21 ? {titre:'Tournoi amical de rapide',debut:s,fin:e,detail:'Espace 166 · ouvert à tous'}
+                             : {titre:'Séance du samedi',debut:s,fin:e,detail:'Espace 166 · tous niveaux'}); }
   }
   return out;
 }
