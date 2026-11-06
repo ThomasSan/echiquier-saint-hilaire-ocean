@@ -494,6 +494,16 @@ const $$ = s => [...document.querySelectorAll(s)];
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 $('#annee').textContent = new Date().getFullYear();
 
+/* ---------- Saison et catégorie jeune, calculées automatiquement ----------
+   La saison commence le 1er septembre. Règle FFE : est « jeune » qui a moins de 20 ans
+   au 1er janvier de la saison, donc né(e) en (année de début de saison − 19) ou après. */
+(function(){
+  const now = new Date();
+  const debut = now.getMonth() >= 8 ? now.getFullYear() : now.getFullYear() - 1;
+  $$('[data-info="saison"]').forEach(el => el.textContent = debut + '-' + (debut + 1));
+  $$('[data-info="jeunes"]').forEach(el => el.textContent = 'Tarif jeune : né(e) en ' + (debut - 19) + ' ou après.');
+})();
+
 /* ---------- Navigation ---------- */
 function go(id, anchor){
   if(!$('#p-'+id)) id = 'accueil';
